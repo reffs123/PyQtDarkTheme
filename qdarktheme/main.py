@@ -51,22 +51,22 @@ def get_themes() -> Tuple[str, ...]:
     return THEMES
 
 
-def _replace_rounded(match: re.Match) -> str:
+def _replace_rounded(match) -> str:
     return match.group().replace("$radius{", "").replace("}", "")
 
 
-def _replace_sharp(match: re.Match) -> str:
+def _replace_sharp(match) -> str:
     return _PATTERN_RADIUS.sub("0", match.group())
 
 
-def _parse_radius(stylesheet: str, border: str = "rounded") -> dict[str, str]:
+def _parse_radius(stylesheet: str, border: str = "rounded") -> Dict[str, str]:
     """Parse `$radius{...}` placeholder in template stylesheet."""
     matches = _PATTERN_RADIUS.finditer(stylesheet)
     replace = _replace_rounded if border == "rounded" else _replace_sharp
     return {match.group(): replace(match) for match in matches}
 
 
-def _parse_env_patch(stylesheet: str) -> dict[str, str]:
+def _parse_env_patch(stylesheet: str) -> Dict[str, str]:
     """Parse `$env_patch{...}` placeholder in template stylesheet.
 
     Template stylesheet has `$env_patch{...}` symbol.
