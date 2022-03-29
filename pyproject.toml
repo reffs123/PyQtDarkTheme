@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "PyQtDarkTheme"
-version = "1.1.0"
+version = "1.1.1"
 description = "Flat dark theme for PySide and PyQt."
 authors = ["Yunosuke Ohsugi <63651161+5yutan5@users.noreply.github.com>"]
 license = "MIT"
@@ -20,6 +20,7 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
@@ -27,9 +28,9 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.7,<3.11"
-pydata-sphinx-theme = { version = ">=0.7.2,<0.9.0", optional = true }
-sphinx-panels = { version = "^0.6.0", optional = true }
+python = ">=3.6.8,<3.11"
+#pydata-sphinx-theme = { version = "0.7.2", optional = true }
+#sphinx-panels = { version = "^0.6.0", optional = true }
 
 [tool.poetry.dev-dependencies]
 # flake8
@@ -39,7 +40,7 @@ flake8-print = "^4.0.0"
 flake8-docstrings = "^1.6.0"
 flake8-bugbear = "^22.1.11"
 flake8-simplify = "^0.18.1"
-flake8-comprehensions = "^3.8.0"
+flake8-comprehensions = "^3.7.0"
 flake8-eradicate = "^1.2.0"
 flake8-rst-docstrings = "^0.2.5"
 flake8-pytest-style = "^1.6.0"
@@ -47,9 +48,9 @@ pep8-naming = "^0.12.1"
 pyproject-flake8 = "^0.0.1-alpha.2"
 
 # pytest
-pytest = "^7.1.0"
+pytest = "^6.2.5"
 pytest-cov = { version = "^3.0.0", extras = ["toml"] }
-pytest-randomly = "^3.11.0"
+pytest-randomly = "^3.10.*"
 pytest-qt = "^4.0.2"
 pytest-xvfb = "^2.0.0"
 pytest-github-actions-annotate-failures = "^0.1.6"
@@ -57,7 +58,7 @@ pytest-github-actions-annotate-failures = "^0.1.6"
 # sphinx
 Sphinx = "^4.3.1"
 sphinx-panels = "^0.6.0"
-pydata-sphinx-theme = ">=0.7.2,<0.9.0"
+#pydata-sphinx-theme = "0.7.2"
 rstcheck = "^3.3.1"
 
 black = "^22.1"
