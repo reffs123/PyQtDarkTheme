@@ -1,5 +1,5 @@
 """Main file of qdarktheme."""
-from __future__ import annotations
+from typing import List, Dict, Tuple
 
 import json
 import platform
@@ -40,7 +40,7 @@ class _SvgFileNotFoundError(FileNotFoundError):
     pass
 
 
-def get_themes() -> tuple[str, ...]:
+def get_themes() -> Tuple[str, ...]:
     """Return available theme list.
 
     Returns:
@@ -86,18 +86,18 @@ def _parse_env_patch(stylesheet: str) -> dict[str, str]:
         The dictionary. Key is the text of $env_patch{...} symbol.
         Value is the value of the `value` key in $env_patch.
     """
-    replacements: dict[str, str] = {}
+    replacements: Dict[str, str] = {}
     for match in re.finditer(_PATTERN_ENV_PATCH, stylesheet):
         match_text = match.group()
         json_text = match_text.replace("$env_patch", "")
-        env_property: dict[str, str] = json.loads(json_text)
+        env_property: Dict[str, str] = json.loads(json_text)
 
         patch_version = env_property.get("version")
         patch_qt = env_property.get("qt")
         patch_os = env_property.get("os")
         patch_value = env_property["value"]
 
-        results: list[bool] = []
+        results: List[bool] = []
         # Parse version
         if patch_version is not None:
             for operator in OPERATORS:

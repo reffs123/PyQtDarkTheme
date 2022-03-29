@@ -1,5 +1,5 @@
 """Utility methods for qdarktheme."""
-from __future__ import annotations
+from typing import List, Dict, Tuple, Union
 
 import inspect
 import logging
@@ -13,7 +13,7 @@ import qdarktheme
 OPERATORS = {"==": ope.eq, "!=": ope.ne, ">=": ope.ge, "<=": ope.le, ">": ope.gt, "<": ope.lt}
 
 
-def multi_replace(target: str, replacements: dict[str, str]) -> str:
+def multi_replace(target: str, replacements: Dict[str, str]) -> str:
     """Given a string and a replacement map, it returns the replaced string.
 
     See https://gist.github.com/bgusach/a967e0587d6e01e889fd1d776c5f3729.

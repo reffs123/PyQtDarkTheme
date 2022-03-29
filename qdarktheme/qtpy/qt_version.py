@@ -1,9 +1,9 @@
 """Module for detecting Qt version."""
-from __future__ import annotations
+from typing import Union
 
 from qdarktheme.qtpy.qt_compat import QT_API
 
-__version__: str | None = None
+__version__: Union[str, None] = None
 if QT_API == "PySide6":
     from PySide6 import __version__  # type: ignore
 elif QT_API == "PyQt6":

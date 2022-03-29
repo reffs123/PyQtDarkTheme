@@ -1,7 +1,7 @@
 """Module for QtWidgets."""
-from __future__ import annotations
 
 from collections.abc import Sequence
+from typing import List, Dict, Tuple, Union, Sequence
 
 from qdarktheme.qtpy.qt_compat import QT_API
 from qdarktheme.qtpy.QtCore import Qt
