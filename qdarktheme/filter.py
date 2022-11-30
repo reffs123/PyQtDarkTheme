@@ -1,5 +1,4 @@
 """A module containing multiple filters used by template engine."""
-from __future__ import annotations
 
 import json
 import platform
@@ -33,11 +32,11 @@ if None in (qt_version, QT_API):
 
 
 @lru_cache()
-def _svg_resources() -> dict[str, str]:
+def _svg_resources():
     return json.loads(resources.SVG_RESOURCES)
 
 
-def color(color_info: str | dict[str, str | dict], state: str | None = None) -> Color:
+def color(color_info, state=None) -> Color:
     """Filter for template engine. This filter convert color info data to color object."""
     if isinstance(color_info, str):
         return Color.from_hex(color_info)
@@ -95,7 +94,7 @@ def url(color: Color, id: str, rotate: int = 0) -> str:
 
 
 def env(
-    text, value: str, version: str | None = None, qt: str | None = None, os: str | None = None
+    text, value: str, version = None, qt=None, os=None
 ) -> str:
     """Filter for template engine. This filter output empty string when unexpected environment."""
     if version and not analyze_version_str(_QT_VERSION, version):

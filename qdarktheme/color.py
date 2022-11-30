@@ -1,5 +1,5 @@
 """Module for color code."""
-from __future__ import annotations
+
 
 import colorsys
 import math
@@ -34,11 +34,11 @@ class _RGBA:
         """
         return f"rgba({self.r}, {self.g}, {self.b}, {self.a:.3f})"
 
-    def __getitem__(self, item: int) -> int | float:
+    def __getitem__(self, item: int):
         """Unpack to (r, g, b, a)."""
         return [self.r, self.g, self.b, self.a][item]
 
-    def __eq__(self, other: _RGBA) -> bool:
+    def __eq__(self, other) -> bool:
         """Returns true if `r`, `g`, `b` and `a` are all the same."""
         return [self.r, self.g, self.b, self.a] == [other.r, other.g, other.b, other.a]
 
@@ -66,7 +66,7 @@ class _HSLA:
         self._l = _round_float(max(min(1, l), 0))
         self._a = _round_float(max(min(1, a), 0))
 
-    def __eq__(self, other: _HSLA) -> bool:
+    def __eq__(self, other) -> bool:
         """Returns true if `h`, `s`, `l` and `a` are all the same."""
         return [self.h, self.s, self.l, self.a] == [other.h, other.s, other.l, other.a]
 
@@ -87,7 +87,7 @@ class _HSLA:
         return self._a
 
     @staticmethod
-    def from_rgba(rgba: _RGBA) -> _HSLA:
+    def from_rgba(rgba: _RGBA):
         hls = colorsys.rgb_to_hls(rgba.r / 255, rgba.g / 255, rgba.b / 255)
         return _HSLA(int(hls[0] * 360), hls[2], hls[1], rgba.a)
 
@@ -99,7 +99,7 @@ class _HSLA:
 class Color:
     """Class handling color code(RGBA and HSLA)."""
 
-    def __init__(self, color_code: _RGBA | _HSLA) -> None:
+    def __init__(self, color_code) -> None:
         """Initialize color code."""
         self._hsla, self._hsva = None, None
         if isinstance(color_code, _RGBA):
@@ -136,7 +136,7 @@ class Color:
             return False
 
     @staticmethod
-    def from_hex(hex: str) -> Color:
+    def from_hex(hex: str):
         """Convert hex string to Color object.
 
         Args:
@@ -205,14 +205,14 @@ class Color:
             return f'"#{self._to_hex()}"'
         return f'"rgb({r}, {g}, {b})" fill-opacity="{a}"'
 
-    def lighten(self, factor: float) -> Color:
+    def lighten(self, factor: float):
         """Lighten color."""
         return Color(_HSLA(self.hsla.h, self.hsla.s, self.hsla.l + self.hsla.l * factor, self.hsla.a))
 
-    def darken(self, factor: float) -> Color:
+    def darken(self, factor: float):
         """Darken color."""
         return Color(_HSLA(self.hsla.h, self.hsla.s, self.hsla.l - self.hsla.l * factor, self.hsla.a))
 
-    def transparent(self, factor: float) -> Color:
+    def transparent(self, factor: float):
         """Make color transparent."""
         return Color(_RGBA(self.rgba.r, self.rgba.g, self.rgba.b, self.rgba.a * factor))

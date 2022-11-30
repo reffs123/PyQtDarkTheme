@@ -1,5 +1,4 @@
 """Main file of qdarktheme."""
-from __future__ import annotations
 
 import json
 import shutil
@@ -14,14 +13,14 @@ from qdarktheme.util import get_cash_root_path, get_logger
 _logger = get_logger(__name__)
 
 
-def _color_schema(theme: str) -> dict[str, str | dict]:
+def _color_schema(theme: str):
     try:
         return json.loads(resources.COLOR_SCHEMAS[theme])
     except KeyError:
         raise ValueError(f'invalid argument, not a dark or light: "{theme}"') from None
 
 
-def _marge_colors(color_schema: dict[str, str | dict], custom_colors: dict[str, str]):
+def _marge_colors(color_schema, custom_colors):
     for color_id, color_format in custom_colors.items():
         if not Color.check_hex_format(color_format):
             raise ValueError(
@@ -54,9 +53,9 @@ def _marge_colors(color_schema: dict[str, str | dict], custom_colors: dict[str, 
 def load_stylesheet(
     theme: str = "dark",
     corner_shape: str = "rounded",
-    custom_colors: dict[str, str] | None = None,
+    custom_colors = None,
     *,
-    border: str | None = None,
+    border = None,
 ) -> str:
     """Load the style sheet which looks like flat design. There are `dark` and `light` theme.
 
@@ -141,7 +140,7 @@ def clear_cache() -> None:
         _logger.info("There is no caches")
 
 
-def load_palette(theme: str = "dark", custom_colors: dict[str, str] | None = None):
+def load_palette(theme: str = "dark", custom_colors=None):
     """Load the QPalette for the dark or light theme.
 
     Args:
@@ -183,7 +182,7 @@ def load_palette(theme: str = "dark", custom_colors: dict[str, str] | None = Non
     return resources.mk_q_palette(mk_template, color_schema)
 
 
-def get_themes() -> tuple[str, ...]:
+def get_themes():
     """Return available theme names.
 
     Returns:

@@ -1,10 +1,9 @@
 """Module for handling template text."""
-from __future__ import annotations
-
 import json
 import re
 from dataclasses import dataclass
 from itertools import chain, zip_longest
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from qdarktheme.util import multi_replace
 
@@ -12,8 +11,8 @@ from qdarktheme.util import multi_replace
 @dataclass(unsafe_hash=True, frozen=True)
 class _Placeholder:
     match_text: str
-    value: str | int | float
-    filters: tuple[str]
+    value: Any
+    filters: Tuple
 
 
 class Template:
@@ -39,7 +38,7 @@ class Template:
 
     @staticmethod
     def _parse_placeholders(text: str):
-        placeholders: set[_Placeholder] = set()
+        placeholders = set()
         for match in re.finditer(Template._PLACEHOLDER_RE, text):
             match_text = match.group()
             contents, *filters = match_text.strip("{}").replace(" ", "").split("|")
@@ -47,7 +46,7 @@ class Template:
             placeholders.add(_Placeholder(match_text, value, tuple(filters)))
         return placeholders
 
-    def _run_filter(self, value: str | int | float, filter_text: str):
+    def _run_filter(self, value, filter_text: str):
         contents = filter_text.split("(")
         if len(contents) == 1:
             return self._filters[contents[0]](value)
@@ -69,7 +68,7 @@ class Template:
     def render(self, replacements: dict) -> str:
         """Render replacements."""
         placeholders = Template._parse_placeholders(self._target_text)
-        new_replacements: dict[str, str] = {}
+        new_replacements = {}
         for placeholder in placeholders:
             value = placeholder.value
             if type(value) is str and len(value) != 0:
