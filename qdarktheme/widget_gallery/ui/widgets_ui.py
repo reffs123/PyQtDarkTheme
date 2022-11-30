@@ -4,9 +4,10 @@ from typing import List, Dict, Tuple, Union
 from typing import Any
 
 from qdarktheme.qtpy.QtCore import QAbstractTableModel, QModelIndex, Qt
-from qdarktheme.qtpy.QtGui import QIcon, QTextOption
+from qdarktheme.qtpy.QtGui import QIcon, QStandardItem, QStandardItemModel, QTextOption
 from qdarktheme.qtpy.QtWidgets import (
     QCheckBox,
+    QColumnView,
     QComboBox,
     QDateTimeEdit,
     QDial,
@@ -47,7 +48,7 @@ class _Group1(QGroupBox):
 
         push_btn, push_btn_toggled = QPushButton("NORMAL"), QPushButton("TOGGLED")
         push_btn_flat, push_btn_flat_toggled = QPushButton("NORMAL"), QPushButton("TOGGLED")
-        tool_btn, tool_btn_toggled, tool_btn_text = QToolButton(), QToolButton(), QToolButton()
+        tool_btn, tool_btn_toggled, tool_btn_text, tool_btn_menu = (QToolButton() for _ in range(4))
         radio_btn_1, radio_btn_2 = QRadioButton("Normal 1"), QRadioButton("Normal 2")
         checkbox, checkbox_tristate = QCheckBox("Normal"), QCheckBox("Tristate")
 
@@ -62,8 +63,10 @@ class _Group1(QGroupBox):
         tool_btn.setIcon(QIcon("icons:favorite_border_24dp.svg"))
         tool_btn_toggled.setIcon(QIcon("icons:favorite_border_24dp.svg"))
         tool_btn_text.setIcon(QIcon("icons:favorite_border_24dp.svg"))
+        tool_btn_menu.setIcon(QIcon("icons:favorite_border_24dp.svg"))
         tool_btn_text.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         tool_btn_text.setText("Text")
+        tool_btn_menu.setPopupMode(QToolButton.ToolButtonPopupMode.MenuButtonPopup)
         tool_btn_toggled.setCheckable(True)
         tool_btn_toggled.setChecked(True)
 
@@ -86,6 +89,7 @@ class _Group1(QGroupBox):
         v_layout_tool.addWidget(tool_btn)
         v_layout_tool.addWidget(tool_btn_toggled)
         v_layout_tool.addWidget(tool_btn_text)
+        v_layout_tool.addWidget(tool_btn_menu)
         group_tool.setLayout(v_layout_tool)
 
         v_layout_radio = QVBoxLayout()
@@ -116,7 +120,7 @@ class _Group2(QGroupBox):
 
         spinbox, spinbox_suffix = QSpinBox(), QSpinBox()
         combobox, combobox_line_edit = QComboBox(), QComboBox()
-        lineedit = QLineEdit()
+        line_edit = QLineEdit()
         date_time_edit, date_time_edit_calendar = QDateTimeEdit(), QDateTimeEdit()
 
         # Setup widgets
@@ -127,7 +131,7 @@ class _Group2(QGroupBox):
         combobox_line_edit.addItems(("Item 1", "Item 2", "Item 3"))
         combobox_line_edit.setEditable(True)
 
-        lineedit.setPlaceholderText("Placeholder text")
+        line_edit.setPlaceholderText("Placeholder text")
         date_time_edit_calendar.setCalendarPopup(True)
 
         # Layout
@@ -141,9 +145,9 @@ class _Group2(QGroupBox):
         v_layout_combo.addWidget(combobox_line_edit)
         group_combobox.setLayout(v_layout_combo)
 
-        v_layout_lineedit = QVBoxLayout()
-        v_layout_lineedit.addWidget(lineedit)
-        group_editable.setLayout(v_layout_lineedit)
+        v_layout_line_edit = QVBoxLayout()
+        v_layout_line_edit.addWidget(line_edit)
+        group_editable.setLayout(v_layout_line_edit)
 
         v_layout_date = QVBoxLayout()
         v_layout_date.addWidget(date_time_edit)
@@ -185,12 +189,14 @@ class _TableModel(QAbstractTableModel):
             flag |= Qt.ItemFlag.ItemIsEditable
         return flag  # type: ignore
 
-    def headerData(self, section: int, orientation: Qt.Orientation, role: int = ...) -> Any:  # noqa: N802
+    def headerData(  # noqa: N802
+        self, section: int, orientation: Qt.Orientation, role: int = ...
+    ) -> Any:
         if role != Qt.ItemDataRole.DisplayRole:
             return None
         if orientation == Qt.Orientation.Horizontal:
             return ["Normal", "Checkbox", "Spinbox", "LineEdit"][section]
-        return super().headerData(section, orientation, role)
+        return section * 100
 
 
 class _Group3(QGroupBox):
@@ -203,6 +209,8 @@ class _Group3(QGroupBox):
         tab_table = QTableView()
         tab_list = QListWidget()
         tab_tree = QTreeWidget()
+        tab_column = QColumnView()
+        btn_toggle_alternating = QPushButton("Alternating")
 
         # Setup widgets
         self.setCheckable(True)
@@ -212,13 +220,13 @@ class _Group3(QGroupBox):
         tab_text_edit.append("<b>PyQtDarkTheme</b>")
         tab_text_edit.append("Dark theme for PySide and PyQt.")
         tab_text_edit.append("This project is licensed under the MIT license.")
+        tab_text_edit.append('<a href="https://pyqtdarktheme.readthedocs.io">PyQtDarkTheme Doc</a>')
         tab_text_edit.setWordWrapMode(QTextOption.WrapMode.NoWrap)
 
         tab_table.setModel(_TableModel())
         tab_table.setSortingEnabled(True)
 
         tab_list.addItems([f"Item {i+1}" for i in range(30)])
-        tab_list.setAlternatingRowColors(True)
 
         tab_tree.setColumnCount(2)
         for i in range(5):
@@ -227,14 +235,35 @@ class _Group3(QGroupBox):
                 item.addChild(QTreeWidgetItem([f"Child Item {i+1}_{j+1}" for _ in range(2)]))
             tab_tree.insertTopLevelItem(i, item)
 
+        tab_column_model = QStandardItemModel()
+        tab_column_model.setHorizontalHeaderLabels(("Header 1", "Header 2"))
+        for row in range(5):
+            item = QStandardItem(f"Item {row+1}")
+            for column in range(15):
+                item.setChild(column, QStandardItem(f"Child Item {row+1}_{column+1}"))
+            tab_column_model.setItem(row, item)
+        tab_column.setModel(tab_column_model)
+
+        def toggle_alternating(checked: bool):
+            tab_table.setAlternatingRowColors(checked)
+            tab_list.setAlternatingRowColors(checked)
+            tab_tree.setAlternatingRowColors(checked)
+            tab_column.setAlternatingRowColors(checked)
+
+        btn_toggle_alternating.setCheckable(True)
+        btn_toggle_alternating.toggled.connect(toggle_alternating)
+        btn_toggle_alternating.setChecked(True)
+
         # layout
         tab_widget.addTab(tab_table, "Table")
         tab_widget.addTab(tab_text_edit, "Text Edit")
         tab_widget.addTab(tab_list, "List")
         tab_widget.addTab(tab_tree, "Tree")
+        tab_widget.addTab(tab_column, "Column")
 
         v_layout_main = QVBoxLayout(self)
         v_layout_main.addWidget(tab_widget)
+        v_layout_main.addWidget(btn_toggle_alternating)
 
 
 class _Group4(QGroupBox):
@@ -270,7 +299,9 @@ class WidgetsUI:
     def setup_ui(self, win: QWidget) -> None:
         """Set up ui."""
         # Widgets
-        h_splitter_1, h_splitter_2 = QSplitter(Qt.Orientation.Horizontal), QSplitter(Qt.Orientation.Horizontal)
+        h_splitter_1, h_splitter_2 = QSplitter(Qt.Orientation.Horizontal), QSplitter(
+            Qt.Orientation.Horizontal
+        )
 
         # Setup widgets
         h_splitter_1.setMinimumHeight(350)  # Fix bug layout crush
