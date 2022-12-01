@@ -1,11 +1,7 @@
 """Module loading QPalette."""
 
-from functools import partial
 
-from qdarktheme.template_engine import Template
-
-
-def mk_q_palette(mk_template: partial[Template], color_map):
+def mk_q_palette(mk_template, color_map):
     """Generate QPalette."""
     from qdarktheme.qtpy.QtGui import QColor, QPalette
 
@@ -18,12 +14,8 @@ def mk_q_palette(mk_template: partial[Template], color_map):
 
     # base
     palette.setColor(QPalette.ColorRole.WindowText, _mk_q_color("{{ foreground|color|palette }}"))
-    palette.setColor(
-        QPalette.ColorRole.Button, _mk_q_color("{{ treeSectionHeader.background|color|palette }}")
-    )
-    palette.setColor(
-        QPalette.ColorRole.Text, _mk_q_color('{{ foreground|color(state="icon")|palette }}')
-    )
+    palette.setColor(QPalette.ColorRole.Button, _mk_q_color("{{ treeSectionHeader.background|color|palette }}"))
+    palette.setColor(QPalette.ColorRole.Text, _mk_q_color('{{ foreground|color(state="icon")|palette }}'))
     palette.setColor(QPalette.ColorRole.ButtonText, _mk_q_color("{{ primary|color|palette }}"))
     palette.setColor(QPalette.ColorRole.Base, _mk_q_color("{{ background|color|palette }}"))
     palette.setColor(QPalette.ColorRole.Window, _mk_q_color("{{ background|color|palette }}"))
@@ -34,9 +26,7 @@ def mk_q_palette(mk_template: partial[Template], color_map):
         QPalette.ColorRole.AlternateBase,
         _mk_q_color("{{ list.alternateBackground|color|palette }}"),
     )
-    palette.setColor(
-        QPalette.ColorRole.ToolTipBase, _mk_q_color('{{ background|color(state="popup")|palette }}')
-    )
+    palette.setColor(QPalette.ColorRole.ToolTipBase, _mk_q_color('{{ background|color(state="popup")|palette }}'))
     palette.setColor(QPalette.ColorRole.ToolTipText, _mk_q_color("{{ foreground|color|palette }}"))
     palette.setColor(QPalette.ColorRole.LinkVisited, _mk_q_color("{{ linkVisited|color|palette }}"))
     if hasattr(QPalette.ColorRole, "Foreground"):
